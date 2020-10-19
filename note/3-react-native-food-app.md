@@ -30,3 +30,11 @@ input: {
     fontSize: 18,
   },
 ```
+
+### 3. inject navigation props with " withNavigation from react-navigation "
+
+- using withNavigation to wrapper compoennt and recieve 'navigation props'
+
+- send some data to navigate screen on second arguments by 'navigation.navigate(< screenName >, { [key]: [value] })'
+
+- on Screen recieve data by 'navigation.getParam("id")'

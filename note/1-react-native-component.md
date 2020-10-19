@@ -7,6 +7,10 @@
 - TextInput
 - Button
 - StyleSheet
+- FlatList
+- Image
+- ScrollView
+- TouchableOpacity
 
 ---
 
@@ -20,6 +24,10 @@
 
 ---
 
-### SVG-ICON : with "@expo/vector-icons"
+#### SVG-ICON : with "@expo/vector-icons"
 
 install '@expo/vector-icons' to using icon;
+
+---
+
+#### Fix screen not fit in View with : "flex: 1"
