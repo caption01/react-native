@@ -1,5 +1,8 @@
+import { AsyncStorage } from "react-native";
+
 import createDataContext from "./createDataContext";
 import trackerApi from "../api/tracker";
+import { navigate } from "../navigationRef";
 
 const authReducer = (state, action) => {
   switch (action.type) {
@@ -7,31 +10,47 @@ const authReducer = (state, action) => {
       return { ...state, errorMessage: action.payload };
     }
 
+    case "signin": {
+      return { errorMessage: "", token: action.payload };
+    }
+
+    case "clear_error_message": {
+      return { ...state, errorMessage: "" };
+    }
+
     default:
       return state;
   }
 };
 
-const signup = (dispatch) => {
-  return async ({ email, password }) => {
-    try {
-      const response = await trackerApi.post("/signup", { email, password });
-    } catch (err) {
-      dispatch({
-        type: "add_error",
-        payload: "Something went wrong with signup",
-      });
-    }
+const signup = (dispatch) => async ({ email, password }) => {
+  try {
+    const response = await trackerApi.post("/signup", { email, password });
+    await AsyncStorage.setItem("token", response?.data?.token);
+    dispatch({ type: "signin", payload: response?.data?.token });
 
-    dispatch({ type: "signup" });
-  };
+    navigate("TrackList");
+  } catch (err) {
+    dispatch({
+      type: "add_error",
+      payload: "Something went wrong with signup",
+    });
+  }
 };
 
-const signin = (dispatch) => {
-  return ({ email, password }) => {
-    // make api req
-    dispatch({ type: "signin" });
-  };
+const signin = (dispatch) => async ({ email, password }) => {
+  try {
+    const response = await trackerApi.post("/signin", { email, password });
+    await AsyncStorage.setItem("token", response?.data?.token);
+    dispatch({ type: "signin", payload: response?.data?.token });
+
+    navigate("TrackList");
+  } catch (err) {
+    dispatch({
+      type: "add_error",
+      payload: "Something went wrong with signin",
+    });
+  }
 };
 
 const signout = (dispatch) => {
@@ -40,8 +59,12 @@ const signout = (dispatch) => {
   };
 };
 
+const clearErrorMessage = (dispatch) => () => {
+  dispatch({ type: "clear_error_message" });
+};
+
 export const { Provider, Context } = createDataContext(
   authReducer,
-  { signin, signout, signup },
-  { isSignedIn: false, errorMessage: "" }
+  { signin, signout, signup, clearErrorMessage },
+  { token: null, errorMessage: "" }
 );
