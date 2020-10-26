@@ -9,8 +9,6 @@ import { Context as AuthContext } from "../context/AuthContext";
 const SignupScreen = () => {
   const { state, signup, clearErrorMessage } = useContext(AuthContext);
 
-  console.log(state);
-
   return (
     <View style={styles.container}>
       <NavigationEvents onWillFocus={clearErrorMessage} />
